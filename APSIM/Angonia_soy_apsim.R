@@ -18,9 +18,9 @@ unique(sim$SimulationID)
 # Keep only 3 names
 graph <- sim %>% 
   mutate(SimulationID = replace (SimulationID, SimulationID==1, "Sc Serenade"))%>%
-  mutate(SimulationID = replace (SimulationID, SimulationID==2, "Sc Safari"))%>%
+  mutate(SimulationID = replace (SimulationID, SimulationID==2, "MRI Dina"))%>%
   mutate(SimulationID = replace (SimulationID, SimulationID==3, "Sc Sentinile"))%>%
-  mutate(SimulationID = replace (SimulationID, SimulationID==4, "MRI Dina"))
+  mutate(SimulationID = replace (SimulationID, SimulationID==4, "Sc Safari"))
 graph  %>%
   ggplot(aes(x=SimulationID, y=Soybean.Phenology.FloweringDAS, group=SimulationID, color=SimulationID)) +
   geom_boxplot(notch=F)+
@@ -39,6 +39,10 @@ graph  %>%
   geom_jitter()+
   ggtitle("Yield Angonia")
 
+graph  %>%
+  ggplot( aes(x=as.Date(Clock.Today), y=Yield, group=SimulationID, color=SimulationID)) +
+  geom_line()+
+  ggtitle("Yield Angonia")
 graph  %>%
   ggplot( aes(x=as.Date(Clock.Today), y=Yield, group=SimulationID, color=SimulationID)) +
   geom_line()+

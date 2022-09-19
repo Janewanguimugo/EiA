@@ -20,8 +20,8 @@ unique(sim$SimulationID)
 # Keep only 3 names
 graph <- sim %>% 
   mutate(SimulationID = replace (SimulationID, SimulationID==1, "Sc Serenade"))%>%
-  mutate(SimulationID = replace (SimulationID, SimulationID==2, "Sc Sentinile"))%>%
-  mutate(SimulationID = replace (SimulationID, SimulationID==3, "Sc Safari"))%>%
+  mutate(SimulationID = replace (SimulationID, SimulationID==2, "Sc Safari"))%>%
+  mutate(SimulationID = replace (SimulationID, SimulationID==3, "Sc Sentinile"))%>%
   mutate(SimulationID = replace (SimulationID, SimulationID==4, "MRI Dina"))
 # Plot
 graph  %>%
