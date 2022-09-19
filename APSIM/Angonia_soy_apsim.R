@@ -43,3 +43,7 @@ graph  %>%
   ggplot( aes(x=as.Date(Clock.Today), y=Yield, group=SimulationID, color=SimulationID)) +
   geom_line()+
   ggtitle("Yield Angonia")
+graph  %>%
+  ggplot( aes(x=as.Date(Clock.Today), y=Yield, group=SimulationID, color=SimulationID)) +
+  geom_line()+
+  ggtitle("Yield Angonia")

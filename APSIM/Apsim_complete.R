@@ -11,7 +11,7 @@ library(apsimx)
 setwd("D:/Jane/apsimruns")
 tmp.dir <- tempdir()
 extd.dir <-"D:/Jane/apsimruns"
-sim <- apsimx("soy.apsimx", value = "HarvestReport")
+sim <- apsimx("soy.apsimx", value = "Report")
 summary(sim)
 glimpse(sim)
 unique(sim$SimulationID)
@@ -30,7 +30,7 @@ chitedze<-read_apsim_met("goodnature.met", src.dir = "D:/Jane/apsimruns")
 inspect_apsimx("soy.apsimx", node = "Weather")
 inspect_apsimx("soy.apsimx", node = "Clock")
 inspect_apsimx("soy.apsimx", node = "Manager",
-               parm = list("SowingRule", NA))
+               parm = list("Sow on a fixed date", NA))
 
 #####################Edit weather
 edit_apsimx("soy.apsimx", 
@@ -46,8 +46,8 @@ edit_apsimx("soy.apsimx",
 ## Change the sowing rule for when rain is available
 edit_apsimx("soy.apsimx", 
             node = "Manager",
-            manager.child = "SowingRule",
-            parm = "StartDate", ## This is for start date
+            manager.child = "Sow on a fixed date",
+            parm = "SowDate", ## This is for start date
             value = "1-nov",
             overwrite = TRUE)
 edit_apsimx("soy.apsimx", 
@@ -58,14 +58,14 @@ edit_apsimx("soy.apsimx",
             overwrite = TRUE)
 edit_apsimx("soy.apsimx", 
             node = "Manager",
-            manager.child = "SowingRule",
+            manager.child = "Sow on a fixed date",
             parm = "CultivarName", ## This is for end date
             value = "Generic_MG0",
             overwrite = TRUE)
 ############################Soil 
-#sp <- get_isric_soil_profile(lonlat = c(32.66, -13.67))
+sp <- get_isric_soil_profile(lonlat = c(32.66, -13.67))
 
-#edit_apsimx_replace_soil_profile("soy.apsimx", soil.profile = sp, overwrite = TRUE)
+edit_apsimx_replace_soil_profile("soy.apsimx", soil.profile = sp, overwrite = TRUE)
 sim1 <- apsimx("soy.apsimx", value = "HarvestReport")
 
 # Plot
