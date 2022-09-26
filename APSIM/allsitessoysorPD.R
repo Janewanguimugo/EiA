@@ -130,10 +130,9 @@ tukey.one.way
 
 GoodNature1  %>%
   ggplot(aes(x= factor(SowDate, level =c("1-nov",  "7-nov",  "14-nov", "21-nov",
-                                         "28-nov", "5-dec",  
-                                         "12-dec", "19-dec", "26-dec", "2-jan", 
-                                         "9-jan",  "16-jan", "23-jan", "30-jan",
-                                         "6-feb",  "13-feb", "20-feb", "27-feb")), 
+                                         "28-nov", "5-dec", "12-dec", "19-dec", 
+                                         "26-dec", "2-jan", "9-jan",  "16-jan", "23-jan",
+                                         "30-jan","6-feb",  "13-feb", "20-feb", "27-feb")), 
              y=Yield, group= SimulationID, color= Cultivar)) +
   geom_boxplot(notch=F)+
   ggtitle("Planting Dates GoodNature")+

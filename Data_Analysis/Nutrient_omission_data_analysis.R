@@ -1,4 +1,4 @@
-setwd("~/Solidarid/")
+setwd("D:/OneDrive - CGIAR/Documents/Solidarid")
 # Libraries
 library("readxl")
 library(tidyverse)
