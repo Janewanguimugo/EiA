@@ -7,8 +7,10 @@
 #sd = The start date e.g.  "2-jan"
 #ed = The start date e.g.  "10-jan"
 #variety = The cultivar you want to simulate e.g "A_103"
+#rep1 = An additional value to report e.g. "[Maize].Grain.Total.Wt*10 as Yield" ,
+#rep2 =An additional value to report e.g. "[Maize].SowingDate"
 
-apsim.spatial <- function(wkdir, cell, b, date, crop, clck, sd, ed, variety) {
+apsim.spatial <- function(wkdir, cell, b, date, crop, clck, sd, ed, variety, rep1, rep2) {
   my_packages <- c("spdep", "rgdal", "maptools", "raster", "plyr", "ggplot2", "rgdal",
                    "dplyr", "cowplot","readxl", "apsimx", "gtools", "foreach","doParallel",
                    "ranger")
@@ -124,7 +126,12 @@ apsim.spatial <- function(wkdir, cell, b, date, crop, clck, sd, ed, variety) {
     apsimx::edit_apsimx(crop,
                         node = "Report",
                         parm = "VariableNames", 
-                        value = "[Maize].Grain.Total.Wt*10 as Yield", 
+                        value = rep1, 
+                        verbose = TRUE, overwrite = TRUE)
+    apsimx::edit_apsimx(crop,
+                        node = "Report",
+                        parm = "VariableNames", 
+                        value = rep2, 
                         verbose = TRUE, overwrite = TRUE)
   }
   
@@ -136,6 +143,8 @@ apsim.spatial <- function(wkdir, cell, b, date, crop, clck, sd, ed, variety) {
   }
   return(my_list_sim)
 }
+
+
 
 
 ################################################################################################
@@ -166,7 +175,7 @@ foreach (i = 1:length(results))%do%{
 ##############################Graphs######################################
   foreach (i = 1:length(results))%do%{
     print(results[[i]]  %>%
-            ggplot(aes(x=Clock.Today, y=Yield)) +
+            ggplot(aes(x=Maize.SowingDate, y=Yield)) +
             geom_point(na.rm=TRUE)+
             ggtitle(paste0("Yield ",i)))
   }
@@ -182,9 +191,14 @@ foreach (i = 1:length(results))%do%{
   country<-getData("GADM", country=b, level=0)
   
   print(ggplot()+geom_polygon(data=country, aes(x=long, y=lat), fill = "white")+
-          geom_point(data=final, aes(x=Longitude, y=Latitude, color= Clock.Today), size = 2))
+          geom_point(data=final, aes(x=Longitude, y=Latitude, color= Maize.SowingDate), size = 2))
   
-  print(ggplot() +  geom_point(data=final, aes(x=Longitude, y=Latitude, color= Clock.Today), size = 2))
+  print(ggplot() +  geom_point(data=final, aes(x=Longitude, y=Latitude, color= Maize.SowingDate), size = 2))
+  
+  print(ggplot()+geom_polygon(data=country, aes(x=long, y=lat), fill = "white")+
+          geom_point(data=final, aes(x=Longitude, y=Latitude, color= Yield), size = 2))
+  
+  print(ggplot() +  geom_point(data=final, aes(x=Longitude, y=Latitude, color= Yield), size = 2))
 }
 
 results<- apsim.spatial(wkdir ="D:/project", 
@@ -195,6 +209,10 @@ results<- apsim.spatial(wkdir ="D:/project",
                         clck = c("2020-10-01T00:00:00", "2021-12-01T00:00:00"),
                         sd = "2-jan", 
                         ed = "29-dec",
-                        variety = "A_103")
+                        variety = "A_103",
+                        rep1 ="[Maize].Grain.Total.Wt*10 as Yield" ,
+                        rep2 ="[Maize].SowingDate")
 
-apsim.plots(results, "ZM","D:/project")
+apsim.plots(results=results, 
+            b= "ZM",
+            wkdir= "D:/project")

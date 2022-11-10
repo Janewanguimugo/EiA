@@ -8,7 +8,7 @@
 #ed = The start date e.g.  "10-jan"
 #variety = The cultivar you want to simulate e.g "A_103"
 
-apsim.spatial <- function(wkdir, cell, b, date, crop, clck, sd, ed, variety) {
+apsim.spatial <- function(wkdir, cell, b, date, crop, clck, sd, ed, variety, rep1, rep2) {
 my_packages <- c("spdep", "rgdal", "maptools", "raster", "plyr", "ggplot2", "rgdal",
                    "dplyr", "cowplot","readxl", "apsimx", "gtools", "foreach","doParallel",
                    "ranger")
@@ -125,7 +125,12 @@ my_packages <- c("spdep", "rgdal", "maptools", "raster", "plyr", "ggplot2", "rgd
     apsimx::edit_apsimx(crop,
                         node = "Report",
                         parm = "VariableNames", 
-                        value = "[Wheat].Grain.Total.Wt*10 as Yield", 
+                        value = rep1, 
+                        verbose = TRUE, overwrite = TRUE)
+    apsimx::edit_apsimx(crop,
+                        node = "Report",
+                        parm = "VariableNames", 
+                        value = rep2, 
                         verbose = TRUE, overwrite = TRUE)
   }
 
@@ -199,6 +204,8 @@ results<- apsim.spatial(wkdir ="D:/Egypt/project",
                         clck = c("2020-10-01T00:00:00", "2021-12-01T00:00:00"),
                         sd = "09-jan", 
                         ed = "29-dec",
-                        variety = "Dekan")
+                        variety = "Dekan",
+                        rep1 ="[Wheat].Grain.Total.Wt*10 as Yield",
+                        rep2 ="[Wheat].SowingDate")
 
 apsim.plots(results,"EGY", "D:/Egypt/project")
