@@ -53,6 +53,12 @@ sim  %>%
   geom_point() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
+sim  %>%
+  ggplot( aes(x= SimulationID , y=Yield)) +
+  geom_point() +
+  scale_x_continuous(breaks = seq(1, 365, by = 5))+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
 final<-sim %>%
   slice(which.max(Yield))%>%
   as.data.frame()
