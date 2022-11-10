@@ -37,8 +37,11 @@ edit_apsimx(crop,
             value = as.character(variety),
             overwrite = TRUE)
 
-sp <-  apsimx::get_isric_soil_profile(lonlat = c(33.64, -13.98))
-edit_apsimx_replace_soil_profile(crop, root = c("pd", "Base"), soil.profile = sp, overwrite = TRUE)
+sp <-  apsimx::get_isric_soil_profile(lonlat = c(30.64, -13.98))
+edit_apsimx_replace_soil_profile(crop, 
+                                 root = c("pd", "Base"), 
+                                 soil.profile = sp, 
+                                 overwrite = TRUE)
 
 inspect_apsimx(crop,
                root = c("pd", "Base"),
@@ -63,4 +66,7 @@ final<-sim %>%
   slice(which.max(Yield))%>%
   as.data.frame()
 
-
+p_Win <- sim  %>% 
+  arrange(desc(Yield)) %>% 
+  slice(1:10)
+p_Win
