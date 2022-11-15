@@ -17,15 +17,16 @@ tmp.dir <- tempdir()
 crop<-"soy_fac_jane.apsimx" 
 sd<-"1-jan"
 ed<- "30-dec" 
-variety<-"mridina" 
+variety<-"safari" 
 clck <- c("2019-10-01T00:00:00", "2020-12-01T00:00:00")
+ppln<- 30
 edit_apsimx(crop,
-            root = c("pd", "Base"), 
+            root = c("pd", "Base_one"), 
             node = "Weather",
             overwrite = TRUE,
             value = "chitedze.met")
 edit_apsimx(crop, 
-            root = c("pd", "Base"),
+            root = c("pd", "Base_one"),
             node = "Clock",
             parm = c("Start", "End"),
             value = clck,
@@ -36,16 +37,34 @@ edit_apsimx(crop,
             parm = "CultivarName", ## This is for end date
             value = as.character(variety),
             overwrite = TRUE)
+edit_apsimx(crop, 
+            node = "Manager",
+            manager.child = "SowingRule",
+            parm = "Population", ## This is for end date
+            value = ppln,
+            overwrite = TRUE)
+
+apsimx::edit_apsimx(crop,
+                    root = c("pd", "Base_one"),
+                    node = "Report",
+                    parm = "VariableNames", 
+                    value = "[Soybean].SowingDate", 
+                    verbose = TRUE, overwrite = TRUE)
 
 sp <-  apsimx::get_isric_soil_profile(lonlat = c(30.64, -13.98))
+sp$soil$BD <-  sp$soil$BD * 0.86
+sp$soil$crop.LL <-  sp$soil$LL15 + 0.01
+sp$soil$SAT <-  c(0.521, 0.521, 0.497, 0.488, 0.478, 0.440)
+
 edit_apsimx_replace_soil_profile(crop, 
-                                 root = c("pd", "Base"), 
+                                 root = c("pd", "Base_one"),
                                  soil.profile = sp, 
                                  overwrite = TRUE)
 
 inspect_apsimx(crop,
-               root = c("pd", "Base"),
-               node = "Soil")
+               root = c("pd", "Base_one"),
+               node = "Crop")
+
 sim <- apsimx(crop, value = "HarvestReport")
 
 sim<- sim %>%
