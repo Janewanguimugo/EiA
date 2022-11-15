@@ -188,22 +188,22 @@ foreach (i = 1:length(results))%do%{
   country<-getData("GADM", country=b, level=0)
   
   print(ggplot()+geom_polygon(data=country, aes(x=long, y=lat), fill = "white")+
-          geom_point(data=final, aes(x=Longitude, y=Latitude, color= Clock.Today), size = 4))
+          geom_point(data=final, aes(x=Longitude, y=Latitude, color= Wheat.SowingDate), size = 4))
   print(ggplot()+geom_polygon(data=country, aes(x=long, y=lat), fill = "white")+
           geom_point(data=final, aes(x=Longitude, y=Latitude, color= Yield), size = 4))
   
-  print(ggplot() +  geom_point(data=final, aes(x=Longitude, y=Latitude, color= Clock.Today), size = 4))
+  print(ggplot() +  geom_point(data=final, aes(x=Longitude, y=Latitude, color= Wheat.SowingDate), size = 4))
   print(ggplot() +  geom_point(data=final, aes(x=Longitude, y=Latitude, color= Yield), size = 4))
 }
 
 results<- apsim.spatial(wkdir ="D:/Egypt/project", 
                         cell = 2,
                         b= "EGY", 
-                        date = c("2020-01-01","2022-01-01"),
-                        crop = "Wheat_Egypt.apsimx", 
-                        clck = c("2020-10-01T00:00:00", "2021-12-01T00:00:00"),
-                        sd = "09-jan", 
-                        ed = "29-dec",
+                        date = c("2000-01-01","2015-01-01"),
+                        crop = "Wheat_Egypta.apsimx", 
+                        clck = c("2000-01-01T00:00:00", "2015-12-01T00:00:00"),
+                        sd = "15-nov", 
+                        ed = "20-nov",
                         variety = "Dekan",
                         rep1 ="[Wheat].Grain.Total.Wt*10 as Yield",
                         rep2 ="[Wheat].SowingDate")
