@@ -54,7 +54,7 @@ apsim.spatial <- function(wkdir, cell, b, date, crop, clck, variety, rep1, rep2)
   stn<-df
   #text(stn$Longitude, y = stn$Latitude, pos = 3)
   write.csv(stn, "station.csv", row.names=FALSE )
-  
+  #read.csv("stn.csv")
   #Get Meteorological data from nasapower
   
   require(nasapower)
@@ -218,7 +218,7 @@ return(p_Win)
 
 
 results<- apsim.spatial(wkdir ="D:/factorial/project/", 
-                        cell = 2,
+                        cell = 4,
                         b= "KE", 
                         date = c("2020-01-01","2022-01-01"),
                         crop = "soybean_fact.apsimx", 
