@@ -1,3 +1,4 @@
+#Created by Jane Mugo j.mugo@cgiar.org
 #wkdir = Working directory where your files will be saved
 #cell = The spatial resolution you want e.g 1 degree
 #b = Choose the country shapefile you want e.g "ZM" for Zimbabwe
@@ -10,7 +11,7 @@
 #rep1 = An additional value to report e.g. "[Maize].Grain.Total.Wt*10 as Yield" ,
 #rep2 =An additional value to report e.g. "[Maize].SowingDate"
 
-apsim.spatial <- function(wkdir, cell, b, date, crop, clck, sd, ed, variety, rep1, rep2) {
+apsim.spatial <- function(wkdir, cell, b, date, crop, clck, sd, ed, variety, fert, rep1, rep2) {
   my_packages <- c("spdep", "rgdal", "maptools", "raster", "plyr", "ggplot2", "rgdal",
                    "dplyr", "cowplot","readxl", "apsimx", "gtools", "foreach","doParallel",
                    "ranger")
@@ -35,7 +36,8 @@ apsim.spatial <- function(wkdir, cell, b, date, crop, clck, sd, ed, variety, rep
   list.files(extd.dir)
   
 #GET COUNTRY SHAPEFILE
-  country<-raster::getData("GADM", country= b, level=0)
+  country<-geodata::gadm(country=b, level=0, path=tempdir())
+  #country<-raster::getData("GADM", country= b, level=0)
   #Kenya1<-getData("GADM", country="KE", level=1)
   country <- st_as_sf(country)
   
@@ -124,6 +126,12 @@ apsim.spatial <- function(wkdir, cell, b, date, crop, clck, sd, ed, variety, rep
                         value = variety,
                         overwrite = TRUE)
     apsimx::edit_apsimx(crop,
+                        node = "Manager",
+                        manager.child = "SowingFertiliser",
+                        parm = "Amount", 
+                        value = fert, 
+                        overwrite = TRUE)
+    apsimx::edit_apsimx(crop,
                         node = "Report",
                         parm = "VariableNames", 
                         value = rep1, 
@@ -143,8 +151,6 @@ apsim.spatial <- function(wkdir, cell, b, date, crop, clck, sd, ed, variety, rep
   }
   return(my_list_sim)
 }
-
-
 
 
 ################################################################################################
@@ -188,31 +194,37 @@ foreach (i = 1:length(results))%do%{
     slice(which.max(Yield))%>%
     as.data.frame()
   
-  country<-getData("GADM", country=b, level=0)
+  #country<-raster::getData("GADM", country=b, level=0)
+  country<-geodata::gadm(country=b, level=0, path=tempdir())
   
-  print(ggplot()+geom_polygon(data=country, aes(x=long, y=lat), fill = "white")+
+  print(ggplot()+tidyterra::geom_spatvector(data=country, fill = "white")+
           geom_point(data=final, aes(x=Longitude, y=Latitude, color= Maize.SowingDate), size = 2))
   
   print(ggplot() +  geom_point(data=final, aes(x=Longitude, y=Latitude, color= Maize.SowingDate), size = 2))
   
-  print(ggplot()+geom_polygon(data=country, aes(x=long, y=lat), fill = "white")+
+  print(ggplot()+tidyterra::geom_spatvector(data=country, fill = "white")+
           geom_point(data=final, aes(x=Longitude, y=Latitude, color= Yield), size = 2))
   
   print(ggplot() +  geom_point(data=final, aes(x=Longitude, y=Latitude, color= Yield), size = 2))
 }
 
 results<- apsim.spatial(wkdir ="D:/project", 
-                        cell = 2,
-                        b= "ZM", 
+                        cell = 0.2,
+                        b= "RWANDA", 
                         date = c("2020-01-01","2022-01-01"),
                         crop = "Maize.apsimx", 
                         clck = c("2020-10-01T00:00:00", "2021-12-01T00:00:00"),
-                        sd = "2-jan", 
-                        ed = "2-feb",
-                        variety = "A_103",
+                        sd = "1-jan", 
+                        ed = "30-dec",
+                        variety = "sc501",
+                        fert = 200,
                         rep1 ="[Maize].Grain.Total.Wt*10 as Yield" ,
                         rep2 ="[Maize].SowingDate")
 
 apsim.plots(results=results, 
-            b= "ZM",
+            b= "RWANDA",
             wkdir= "D:/project")
+
+saveRDS(results, file="results.RData")
+
+results<- readRDS("results.RData")
